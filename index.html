@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>nk111 - Portal</title>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <style>
 :root { 
     --bg: #ffffff; 
@@ -33,7 +36,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
 .logo-title { font-weight: 900; color: #b45309; letter-spacing: 1px; font-size: 15px; }
 .logo-subtitle { font-size: 8px; color: var(--text-dim); letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; }
 
-/* Unique Coin / Balance Badge Design */
 .balance-badge { 
     background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(29, 78, 216, 0.2)); 
     border: 1px solid var(--blue); 
@@ -47,11 +49,9 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
     gap: 4px;
 }
 
-/* Main Screens */
 .screen { flex: 1; padding: 12px; display: none; flex-direction: column; overflow-y: auto; gap: 12px; }
 .active-screen { display: flex !important; }
 
-/* Form Controls */
 .input-box { width: 100%; padding: 12px 14px; margin-bottom: 10px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 14px; outline: none; transition: 0.2s; }
 .input-box:focus { border-color: var(--blue); background: #ffffff; }
 .btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; font-size: 14px; background: var(--blue-gradient); color: #ffffff; cursor: pointer; margin-top: 4px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
@@ -59,102 +59,41 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
 .btn-red { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
 .btn-blue { background: var(--blue-gradient); color: white; }
 
-/* Card Components */
 .card { background: var(--card); padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); }
 .banner-box { width: 100%; min-height: 130px; border-radius: 12px; background: linear-gradient(135deg, #e2e8f0, #cbd5e1); background-size: cover; background-position: center; border: 1px solid var(--blue); display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 15px rgba(37, 99, 235, 0.1); }
 .banner-text { background: rgba(255, 255, 255, 0.95); width: 100%; padding: 8px 12px; font-size: 11px; font-weight: bold; color: var(--blue); border-top: 1px solid var(--border-color); }
 
-/* Top Image UI */
-.top-image-ui-container {
-    background: #f8fafc;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    flex-shrink: 0;
-}
-.provider-scroll-container {
-    display: flex;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 4px;
-    scrollbar-width: none;
-}
+.top-image-ui-container { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+.provider-scroll-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
 .provider-scroll-container::-webkit-scrollbar { display: none; }
 
-.provider-card {
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    min-width: 105px;
-    height: 55px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition: 0.2s;
-    padding: 4px;
-}
-.provider-card:hover, .provider-card:active {
-    border-color: var(--blue);
-    box-shadow: 0 0 8px rgba(37, 99, 235, 0.2);
-}
+.provider-card { background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; min-width: 105px; height: 55px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; padding: 4px; }
 .provider-logo-text { font-weight: 900; font-size: 13px; letter-spacing: 0.5px; color: #334155; text-align: center; }
 .provider-sub-name { font-size: 8px; color: var(--text-dim); margin-top: 1px; text-align: center; }
 
-/* Search Bar Row */
 .search-row-box { display: flex; gap: 8px; align-items: center; }
 .search-input-wrapper { flex: 1; background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; display: flex; align-items: center; padding: 0 12px; height: 44px; justify-content: space-between; }
 .search-input-field { background: transparent; border: none; color: var(--blue); font-size: 13px; outline: none; width: 100%; font-weight: bold; }
 .search-input-field::placeholder { color: var(--blue); opacity: 0.8; }
 .search-icon-btn, .icon-action-btn { background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 16px; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
-.icon-action-btn:hover { border-color: var(--blue); }
 
-/* Option Cards Section */
 .dynamic-section-title { color: var(--blue); font-size: 13px; font-weight: bold; margin-top: 4px; margin-bottom: 2px; }
 .options-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
-.option-card { 
-    background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%); 
-    border: 1px solid #cbd5e1; 
-    border-radius: 12px; 
-    padding: 10px 6px; 
-    text-align: center; 
-    cursor: pointer; 
-    transition: all 0.25s ease; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center;
-    min-height: 85px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    position: relative;
-}
-.option-card:hover, .option-card:active { 
-    transform: translateY(-3px); 
-    border-color: var(--blue); 
-    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.2); 
-}
+.option-card { background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%); border: 1px solid #cbd5e1; border-radius: 12px; padding: 10px 6px; text-align: center; cursor: pointer; transition: all 0.25s ease; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 85px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; }
 .option-icon { font-size: 20px; margin-bottom: 3px; }
 .option-card span { font-size: 10px; font-weight: 700; color: #334155; text-align: center; word-break: break-word; line-height: 1.2; }
 
-/* Badges */
 .card-badges-row { display: flex; gap: 4px; margin-top: 5px; align-items: center; justify-content: center; }
 .badge-777 { background: rgba(37, 99, 235, 0.15); border: 1px solid var(--blue); color: var(--blue); font-size: 8px; font-weight: 900; padding: 1px 5px; border-radius: 6px; letter-spacing: 0.5px; }
 .badge-info { background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #0284c7; font-size: 8px; font-weight: 900; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
 
-/* Modal Popup */
 .image-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
 .modal-content-box { background: #ffffff; border: 2px solid var(--blue); border-radius: 14px; padding: 20px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.15); position: relative; }
 .spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--blue); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 14px auto; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 .close-modal-btn { position: absolute; top: 10px; right: 14px; color: var(--blue); font-size: 24px; font-weight: bold; cursor: pointer; }
 
-/* Grid Layouts & Profiles */
 .agent-grid, .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
 .action-grid { grid-template-columns: 1fr 1fr 1fr; }
 .agent-card, .action-card { background: var(--card); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 6px; text-align: center; cursor: pointer; transition: 0.2s; }
@@ -163,14 +102,12 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
 .prof-title-box { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 2px; }
 .prof-balance-tag { background: rgba(37, 99, 235, 0.1); border: 1px solid var(--blue); color: var(--blue); font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
 
-/* History & Bottom Nav */
 .history-item { background: var(--card); padding: 8px 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
 .bottom-nav { background: #ffffff; display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid var(--border-color); flex-shrink: 0; }
 .nav-item { color: var(--text-dim); font-size: 11px; cursor: pointer; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
 .nav-item.active { color: var(--blue); }
 .sub-link { color: var(--blue); font-size: 11px; text-decoration: underline; cursor: pointer; font-weight: 600; }
 
-/* Method Selector & Extras */
 .method-selector { display: flex; gap: 8px; margin-bottom: 10px; }
 .method-btn { flex: 1; padding: 8px; border-radius: 6px; background: #f8fafc; color: var(--text-main); font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; border: 1px solid var(--border-color); }
 .method-btn.bkash-active { background: var(--bkash); color: white; border-color: var(--bkash); }
@@ -187,7 +124,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
 .option-config-card { background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 10px; }
 .option-config-title { font-size: 12px; font-weight: bold; color: var(--blue); margin-bottom: 4px; }
 
-/* Chat Container Styling */
 .help-card-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; margin-bottom: 10px; }
 .help-title { color: var(--blue); font-size: 13px; font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
 .chat-container { display: flex; flex-direction: column; height: 220px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; margin-top: 6px; }
@@ -203,7 +139,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
 </head>
 <body>
 <div class="app-container">
-    <!-- Header with nk111 Pro Logo -->
     <div class="header">
         <div class="logo-container">
             <div class="logo-icon-badge">🎰</div>
@@ -212,13 +147,11 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
                 <span class="logo-subtitle">VIP SLOTS ELITE</span>
             </div>
         </div>
-        <!-- Unique Coin / Balance Badge -->
         <div class="balance-badge" id="header-balance-wrap">
             🪙 ৳ <span id="user-balance">0.00</span>
         </div>
     </div>
 
-    <!-- Auth Screen -->
     <div id="auth-screen" class="screen active-screen">
         <div class="card" id="login-form-box" style="margin-top: auto; margin-bottom: auto;">
             <h2 style="color: var(--blue); margin-bottom: 14px; text-align: center; font-size: 18px;">nk111 পোর্টাল লগইন</h2>
@@ -242,9 +175,7 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
         </div>
     </div>
 
-    <!-- Home Screen -->
     <div id="home-screen" class="screen">
-        <!-- Top Image UI -->
         <div class="top-image-ui-container">
             <div class="provider-scroll-container">
                 <div class="provider-card" onclick="triggerGameLoadingModal('JILI')">
@@ -275,7 +206,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
             </div>
         </div>
 
-        <!-- Banner with nk111 Update Info -->
         <div class="banner-box" id="home-banner" onclick="handleBannerClick()">
             <div class="banner-text" id="home-notice">📢 nk111 গেমের অফিশিয়াল আপডেট ও মেইনটেন্যান্স চলছে! গেম সংক্রান্ত তথ্যের জন্য ক্লিক করুন।</div>
         </div>
@@ -284,7 +214,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
         <div class="options-grid" id="home-options-grid"></div>
     </div>
 
-    <!-- Server Loading & Maintenance Modal Popup -->
     <div id="loading-modal" class="image-modal" onclick="closeLoadingModal()">
         <div class="modal-content-box" onclick="event.stopPropagation()">
             <span class="close-modal-btn" onclick="closeLoadingModal()">&times;</span>
@@ -297,7 +226,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
         </div>
     </div>
 
-    <!-- Profile & Wallet Screen -->
     <div id="profile-screen" class="screen">
         <div class="card profile-card">
             <div class="avatar-wrap" id="prof-avatar">U</div>
@@ -327,7 +255,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
         <div class="dynamic-section-title">⚡ nk111 Profile Options</div>
         <div class="options-grid" id="profile-options-grid"></div>
 
-        <!-- Sub Panel: Deposit Box -->
         <div class="card action-sub-panel" id="action-panel-deposit">
             <button onclick="closeActionSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ অপশনে ফিরে যান</button>
             <h4 style="margin-bottom: 8px; color: var(--green); font-size: 14px;">💳 ডিপোজিট করুন</h4>
@@ -349,7 +276,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
             <button class="btn btn-green" onclick="submitDeposit()">ডিপোজিট সাবমিট</button>
         </div>
 
-        <!-- Sub Panel: Withdraw Box -->
         <div class="card action-sub-panel" id="action-panel-withdraw">
             <button onclick="closeActionSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ অপশনে ফিরে যান</button>
             <h4 style="margin-bottom: 8px; color: var(--red); font-size: 14px;">💸 উইথড্র করুন</h4>
@@ -358,7 +284,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
             <button class="btn btn-red" onclick="submitWithdraw()">উইথড্র সাবমিট</button>
         </div>
 
-        <!-- Sub Panel: Password Change Box -->
         <div class="card action-sub-panel" id="action-panel-password">
             <button onclick="closeActionSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ অপশনে ফিরে যান</button>
             <h4 style="margin-bottom: 8px; color: var(--blue); font-size: 14px;">🔐 পাসওয়ার্ড পরিবর্তন</h4>
@@ -367,7 +292,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
             <button class="btn" onclick="changePassword()">পাসওয়ার্ড আপডেট</button>
         </div>
 
-        <!-- Transaction History -->
         <div class="card">
             <h4 style="color: var(--blue); font-size: 14px; margin-bottom: 8px;">📜 লেনদেন হিস্ট্রি</h4>
             <div id="user-history-list"></div>
@@ -375,7 +299,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
         <button class="btn btn-red" style="margin-top: 4px;" onclick="logout()">🚪 লগআউট</button>
     </div>
 
-    <!-- Agent Control Screen -->
     <div id="agent-screen" class="screen">
         <div class="card">
             <h3 style="color: var(--blue); font-size: 15px;">⚡ nk111 এজেন্ট কন্ট্রোল ড্যাশবোর্ড</h3>
@@ -403,7 +326,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
             </div>
         </div>
 
-        <!-- Sub Panels -->
         <div class="card agent-sub-panel" id="sub-panel-users">
             <button onclick="closeAgentSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ ড্যাশবোর্ডে ফিরুন</button>
             <h4 style="margin-bottom: 8px; color: var(--blue); font-size: 14px;">👥 সমস্ত ইউজার একাউন্ট নিয়ন্ত্রণ</h4>
@@ -459,7 +381,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
         <button class="btn btn-red" style="margin-top: 8px;" onclick="logout()">এজেন্ট লগআউট</button>
     </div>
 
-    <!-- Help Center Screen -->
     <div id="help-screen" class="screen">
         <div class="card" style="display: flex; flex-direction: column; height: 100%;">
             <h3 style="color: var(--blue); font-size: 15px; margin-bottom: 6px; text-align: center;">🛡️ nk111 Help Center</h3>
@@ -484,7 +405,6 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
         </div>
     </div>
 
-    <!-- Bottom Nav -->
     <div class="bottom-nav" id="nav-bar" style="display: none;">
         <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
             <div>🏠</div>
@@ -502,6 +422,13 @@ body { background-color: #f1f5f9; color: var(--text-main); display: flex; justif
 </div>
 
 <script>
+// Firebase Initialization
+const firebaseConfig = {
+    databaseURL: "https://crush-combiner-default-rtdb.firebaseio.com/"
+};
+firebase.initializeApp(firebaseConfig);
+const dbRef = firebase.database().ref();
+
 const FIXED_HOME_ITEMS = [
     { name: "Super Ace", icon: "🃏" },
     { name: "Aviator", icon: "✈️" },
@@ -552,39 +479,53 @@ function closeLoadingModal() {
     document.getElementById('loading-modal').style.display = 'none';
 }
 
-let usersDB = JSON.parse(localStorage.getItem('nk1111_usersDB_v3')) || {};
-
-// ইউজারনেম tmraju123 এবং পাসওয়ার্ড 112233 সেট করা হলো, ব্যালেন্স ৭,০০,৫০০ টাকা
-if (!usersDB["tmraju123"]) {
-    usersDB["tmraju123"] = {
-        username: "tmraju123",
-        email: "tmraju123@gmail.com",
-        phone: "01326887853",
-        pass: "112233",
-        balance: 700500.00
-    };
-} else {
-    usersDB["tmraju123"].balance = 700500.00;
-    usersDB["tmraju123"].pass = "112233";
-    usersDB["tmraju123"].phone = "01326887853";
-}
-
-let transRequests = JSON.parse(localStorage.getItem('nk1111_transDB_v3')) || [];
-let chatMessagesDB = JSON.parse(localStorage.getItem('nk1111_chatDB_v3')) || {};
-
-// এখানে নতুন নম্বর 01326887853 যুক্ত করা হলো (বিকাশ হিসেবে)
-let agentNumbers = JSON.parse(localStorage.getItem('nk1111_agentNums_v3')) || [
+let usersDB = {};
+let transRequests = [];
+let chatMessagesDB = {};
+let agentNumbers = [
     { num: "01326887853", type: "bKash", active: true },
     { num: "01711111111", type: "bKash", active: true },
     { num: "01822222222", type: "Nagad", active: true },
     { num: "01933333333", type: "Nagad", active: true },
     { num: "01344444444", type: "bKash", active: true }
 ];
-
-let siteConfig = JSON.parse(localStorage.getItem('nk1111_siteConfig_v3')) || {
+let siteConfig = {
     banners: ['https://picsum.photos/id/1067/400/150'],
     notice: '📢 nk111 গেমের অফিশিয়াল আপডেট ও মেইনটেন্যান্স চলছে! গেম সংক্রান্ত তথ্যের জন্য ক্লিক করুন।'
 };
+
+// Real-time listener from Firebase Database
+dbRef.on('value', (snapshot) => {
+    let data = snapshot.val();
+    if(data) {
+        if(data.usersDB) usersDB = data.usersDB;
+        if(data.transDB) transRequests = data.transDB;
+        if(data.chatDB) chatMessagesDB = data.chatDB;
+        if(data.agentNums) agentNumbers = data.agentNums;
+        if(data.siteConfig) siteConfig = data.siteConfig;
+    }
+
+    if (!usersDB["tmraju123"]) {
+        usersDB["tmraju123"] = {
+            username: "tmraju123",
+            email: "tmraju123@gmail.com",
+            phone: "01326887853",
+            pass: "112233",
+            balance: 700500.00
+        };
+        syncDB();
+    }
+    
+    updateUserUI();
+    updateHomeConfigUI();
+    if(currentUserKey === "AGENT") {
+        loadAgentPanel();
+    }
+    if(currentUserKey && currentUserKey !== "AGENT") {
+        renderUserHistory();
+        renderUserChatMessages();
+    }
+});
 
 let currentUserKey = null;
 let activeChatUser = null;
@@ -632,11 +573,13 @@ function getCurrentFormattedDateTime() {
 }
 
 function syncDB() {
-    localStorage.setItem('nk1111_usersDB_v3', JSON.stringify(usersDB));
-    localStorage.setItem('nk1111_transDB_v3', JSON.stringify(transRequests));
-    localStorage.setItem('nk1111_chatDB_v3', JSON.stringify(chatMessagesDB));
-    localStorage.setItem('nk1111_agentNums_v3', JSON.stringify(agentNumbers));
-    localStorage.setItem('nk1111_siteConfig_v3', JSON.stringify(siteConfig));
+    dbRef.set({
+        usersDB: usersDB,
+        transDB: transRequests,
+        chatDB: chatMessagesDB,
+        agentNums: agentNumbers,
+        siteConfig: siteConfig
+    });
 }
 
 function toggleAuth(type) {
@@ -796,6 +739,7 @@ function updateUserUI() {
 
 function renderUserHistory() {
     let historyContainer = document.getElementById('user-history-list');
+    if(!historyContainer) return;
     historyContainer.innerHTML = '';
     let myReqs = transRequests.filter(r => r.username === currentUserKey);
     myReqs.sort((a, b) => b.id - a.id);
@@ -951,6 +895,7 @@ function loadAgentPanel() {
 
 function loadAgentUserAccessList() {
     let container = document.getElementById('agent-user-access-list');
+    if(!container) return;
     container.innerHTML = '';
     Object.keys(usersDB).forEach(key => {
         let u = usersDB[key];
@@ -979,6 +924,7 @@ function saveBannerNotice() {
 
 function loadAgentNumbersUI() {
     let container = document.getElementById('agent-nums-config');
+    if(!container) return;
     container.innerHTML = '';
     for(let i=0; i<agentNumbers.length; i++) {
         let item = agentNumbers[i];
@@ -1018,8 +964,9 @@ function switchReportTab(type) {
 
 function renderAgentReports() {
     let listContainer = document.getElementById('agent-reports-list');
+    if(!listContainer) return;
     listContainer.innerHTML = '';
-    let pendingList = transRequests.filter(r => r.status === 'Pending' && r.type === currentReportTab);
+    let pendingList = (transRequests || []).filter(r => r.status === 'Pending' && r.type === currentReportTab);
     if(pendingList.length === 0) {
         listContainer.innerHTML = `<p style="color:var(--text-dim); text-align:center; font-size:10px; margin-top:8px;">কোনো পেন্ডিং নেই</p>`;
         return;
