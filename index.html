@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>nk111 - Portal</title>
+<style>
+:root { 
+    --bg: #ffffff; 
+    --card: #f8fafc; 
+    --card-inner: #f1f5f9; 
+    --gold: #d97706; 
+    --gold-glow: rgba(217, 119, 6, 0.2); 
+    --green: #10b981; 
+    --red: #ef4444; 
+    --blue: #2563eb;
+    --blue-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    --text-main: #0f172a;
+    --text-dim: #64748b; 
+    --border-color: #e2e8f0;
+    --bkash: #e2136e; 
+    --nagad: #f7921e; 
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; user-select: none; }
+body { background-color: #f1f5f9; color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+.app-container { width: 100%; max-width: 430px; height: 100vh; max-height: 900px; background: var(--bg); border: 1px solid var(--border-color); display: flex; flex-direction: column; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.1); overflow: hidden; }
+
+/* Header & Logo */
+.header { background: #ffffff; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); z-index: 10; flex-shrink: 0; }
+.logo-container { display: flex; align-items: center; gap: 8px; }
+.logo-icon-badge { width: 34px; height: 34px; background: linear-gradient(135deg, #f59e0b, #b45309); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); border: 1px solid #fde047; }
+.logo-text-wrap { display: flex; flex-direction: column; }
+.logo-title { font-weight: 900; color: #b45309; letter-spacing: 1px; font-size: 15px; }
+.logo-subtitle { font-size: 8px; color: var(--text-dim); letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; }
+
+/* Unique Coin / Balance Badge Design */
+.balance-badge { 
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(29, 78, 216, 0.2)); 
+    border: 1px solid var(--blue); 
+    color: var(--blue); 
+    padding: 6px 14px; 
+    border-radius: 25px; 
+    font-weight: 800; 
+    font-size: 13px; 
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Main Screens */
+.screen { flex: 1; padding: 12px; display: none; flex-direction: column; overflow-y: auto; gap: 12px; }
+.active-screen { display: flex !important; }
+
+/* Form Controls */
+.input-box { width: 100%; padding: 12px 14px; margin-bottom: 10px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; color: var(--text-main); font-size: 14px; outline: none; transition: 0.2s; }
+.input-box:focus { border-color: var(--blue); background: #ffffff; }
+.btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-weight: bold; font-size: 14px; background: var(--blue-gradient); color: #ffffff; cursor: pointer; margin-top: 4px; box-shadow: 0 4px 6px rgba(37, 99, 235, 0.2); }
+.btn-green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; }
+.btn-red { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; }
+.btn-blue { background: var(--blue-gradient); color: white; }
+
+/* Card Components */
+.card { background: var(--card); padding: 14px; border-radius: 12px; border: 1px solid var(--border-color); }
+.banner-box { width: 100%; min-height: 130px; border-radius: 12px; background: linear-gradient(135deg, #e2e8f0, #cbd5e1); background-size: cover; background-position: center; border: 1px solid var(--blue); display: flex; flex-direction: column; justify-content: flex-end; cursor: pointer; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 15px rgba(37, 99, 235, 0.1); }
+.banner-text { background: rgba(255, 255, 255, 0.95); width: 100%; padding: 8px 12px; font-size: 11px; font-weight: bold; color: var(--blue); border-top: 1px solid var(--border-color); }
+
+/* Top Image UI */
+.top-image-ui-container {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+}
+.provider-scroll-container {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+}
+.provider-scroll-container::-webkit-scrollbar { display: none; }
+
+.provider-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    min-width: 105px;
+    height: 55px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: 0.2s;
+    padding: 4px;
+}
+.provider-card:hover, .provider-card:active {
+    border-color: var(--blue);
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.2);
+}
+.provider-logo-text { font-weight: 900; font-size: 13px; letter-spacing: 0.5px; color: #334155; text-align: center; }
+.provider-sub-name { font-size: 8px; color: var(--text-dim); margin-top: 1px; text-align: center; }
+
+/* Search Bar Row */
+.search-row-box { display: flex; gap: 8px; align-items: center; }
+.search-input-wrapper { flex: 1; background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; display: flex; align-items: center; padding: 0 12px; height: 44px; justify-content: space-between; }
+.search-input-field { background: transparent; border: none; color: var(--blue); font-size: 13px; outline: none; width: 100%; font-weight: bold; }
+.search-input-field::placeholder { color: var(--blue); opacity: 0.8; }
+.search-icon-btn, .icon-action-btn { background: #ffffff; border: 1px solid var(--border-color); border-radius: 10px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 16px; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
+.icon-action-btn:hover { border-color: var(--blue); }
+
+/* Option Cards Section */
+.dynamic-section-title { color: var(--blue); font-size: 13px; font-weight: bold; margin-top: 4px; margin-bottom: 2px; }
+.options-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+.option-card { 
+    background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%); 
+    border: 1px solid #cbd5e1; 
+    border-radius: 12px; 
+    padding: 10px 6px; 
+    text-align: center; 
+    cursor: pointer; 
+    transition: all 0.25s ease; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+    min-height: 85px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    position: relative;
+}
+.option-card:hover, .option-card:active { 
+    transform: translateY(-3px); 
+    border-color: var(--blue); 
+    box-shadow: 0 6px 15px rgba(37, 99, 235, 0.2); 
+}
+.option-icon { font-size: 20px; margin-bottom: 3px; }
+.option-card span { font-size: 10px; font-weight: 700; color: #334155; text-align: center; word-break: break-word; line-height: 1.2; }
+
+/* Badges */
+.card-badges-row { display: flex; gap: 4px; margin-top: 5px; align-items: center; justify-content: center; }
+.badge-777 { background: rgba(37, 99, 235, 0.15); border: 1px solid var(--blue); color: var(--blue); font-size: 8px; font-weight: 900; padding: 1px 5px; border-radius: 6px; letter-spacing: 0.5px; }
+.badge-info { background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #0284c7; font-size: 8px; font-weight: 900; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+
+/* Modal Popup */
+.image-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999; flex-direction: column; justify-content: center; align-items: center; padding: 20px; }
+.modal-content-box { background: #ffffff; border: 2px solid var(--blue); border-radius: 14px; padding: 20px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.15); position: relative; }
+.spinner { width: 40px; height: 40px; border: 4px solid var(--border-color); border-top: 4px solid var(--blue); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 14px auto; }
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.close-modal-btn { position: absolute; top: 10px; right: 14px; color: var(--blue); font-size: 24px; font-weight: bold; cursor: pointer; }
+
+/* Grid Layouts & Profiles */
+.agent-grid, .action-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+.action-grid { grid-template-columns: 1fr 1fr 1fr; }
+.agent-card, .action-card { background: var(--card); border: 1px solid var(--border-color); border-radius: 10px; padding: 10px 6px; text-align: center; cursor: pointer; transition: 0.2s; }
+.profile-card { background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%); border: 1px solid var(--border-color); text-align: center; padding: 14px; }
+.avatar-wrap { width: 56px; height: 56px; margin: 0 auto 6px; background: var(--blue-gradient); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 900; }
+.prof-title-box { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 2px; }
+.prof-balance-tag { background: rgba(37, 99, 235, 0.1); border: 1px solid var(--blue); color: var(--blue); font-size: 11px; padding: 2px 6px; border-radius: 10px; font-weight: bold; }
+
+/* History & Bottom Nav */
+.history-item { background: var(--card); padding: 8px 10px; border-radius: 8px; margin-bottom: 6px; border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+.bottom-nav { background: #ffffff; display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid var(--border-color); flex-shrink: 0; }
+.nav-item { color: var(--text-dim); font-size: 11px; cursor: pointer; font-weight: bold; display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
+.nav-item.active { color: var(--blue); }
+.sub-link { color: var(--blue); font-size: 11px; text-decoration: underline; cursor: pointer; font-weight: 600; }
+
+/* Method Selector & Extras */
+.method-selector { display: flex; gap: 8px; margin-bottom: 10px; }
+.method-btn { flex: 1; padding: 8px; border-radius: 6px; background: #f8fafc; color: var(--text-main); font-weight: bold; cursor: pointer; text-align: center; font-size: 11px; border: 1px solid var(--border-color); }
+.method-btn.bkash-active { background: var(--bkash); color: white; border-color: var(--bkash); }
+.method-btn.nagad-active { background: var(--nagad); color: white; border-color: var(--nagad); }
+.user-access-item { background: var(--card); padding: 8px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+.agent-sub-panel, .action-sub-panel { display: none; }
+.report-tab-btn { flex: 1; padding: 6px; background: #f8fafc; color: var(--text-main); border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: bold; }
+.report-tab-btn.active-dep { background: var(--blue); color: white; border-color: var(--blue); }
+.report-tab-btn.active-wd { background: var(--blue); color: white; border-color: var(--blue); }
+.status-toggle-btn { border: 1px solid var(--border-color); background: #f8fafc; border-radius: 6px; padding: 4px 8px; cursor: pointer; font-size: 12px; }
+.trans-time { font-size: 9px; color: var(--blue); margin-top: 1px; }
+.copy-box { display: flex; align-items: center; justify-content: center; gap: 6px; margin: 4px 0; }
+.copy-btn { background: rgba(37, 99, 235, 0.1); border: 1px solid var(--blue); color: var(--blue); padding: 3px 6px; border-radius: 4px; font-size: 10px; font-weight: bold; cursor: pointer; }
+.option-config-card { background: #f8fafc; padding: 8px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 10px; }
+.option-config-title { font-size: 12px; font-weight: bold; color: var(--blue); margin-bottom: 4px; }
+
+/* Chat Container Styling */
+.help-card-box { background: #f8fafc; border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; margin-bottom: 10px; }
+.help-title { color: var(--blue); font-size: 13px; font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+.chat-container { display: flex; flex-direction: column; height: 220px; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 8px; margin-top: 6px; }
+.chat-messages { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 2px; }
+.chat-bubble { max-width: 80%; padding: 6px 10px; border-radius: 8px; font-size: 11px; line-height: 1.3; word-break: break-word; }
+.chat-bubble.user { background: var(--blue); color: #ffffff; align-self: flex-end; font-weight: 500; }
+.chat-bubble.agent { background: #e2e8f0; color: var(--text-main); align-self: flex-start; border: 1px solid var(--border-color); }
+.chat-input-area { display: flex; gap: 4px; margin-top: 6px; }
+.faq-list { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.faq-btn { background: #ffffff; border: 1px solid var(--border-color); color: var(--text-main); padding: 6px 8px; border-radius: 6px; text-align: left; font-size: 10px; cursor: pointer; transition: 0.2s; }
+.faq-btn:hover { border-color: var(--blue); color: var(--blue); }
+</style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Header with nk111 Pro Logo -->
+    <div class="header">
+        <div class="logo-container">
+            <div class="logo-icon-badge">🎰</div>
+            <div class="logo-text-wrap">
+                <span class="logo-title">nk111 PRO</span>
+                <span class="logo-subtitle">VIP SLOTS ELITE</span>
+            </div>
+        </div>
+        <!-- Unique Coin / Balance Badge -->
+        <div class="balance-badge" id="header-balance-wrap">
+            🪙 ৳ <span id="user-balance">0.00</span>
+        </div>
+    </div>
+
+    <!-- Auth Screen -->
+    <div id="auth-screen" class="screen active-screen">
+        <div class="card" id="login-form-box" style="margin-top: auto; margin-bottom: auto;">
+            <h2 style="color: var(--blue); margin-bottom: 14px; text-align: center; font-size: 18px;">nk111 পোর্টাল লগইন</h2>
+            <input type="text" id="login-id" class="input-box" placeholder="ইউজারনেম / ফোন নম্বর">
+            <input type="password" id="login-pass" class="input-box" placeholder="পাসওয়ার্ড">
+            <button class="btn" onclick="login()">লগইন</button>
+            <div style="text-align: center; margin-top: 10px;">
+                <span class="sub-link" onclick="toggleAuth('signup')">নতুন অ্যাকাউন্ট রেজিস্টার করুন</span>
+            </div>
+        </div>
+        <div class="card" id="signup-form-box" style="display: none; margin-top: auto; margin-bottom: auto;">
+            <h2 style="color: var(--blue); margin-bottom: 14px; text-align: center; font-size: 18px;">nk111 রেজিস্ট্রেশন</h2>
+            <input type="text" id="reg-name" class="input-box" placeholder="ইউজারনেম">
+            <input type="email" id="reg-email" class="input-box" placeholder="ইমেইল">
+            <input type="text" id="reg-phone" class="input-box" placeholder="ফোন নম্বর">
+            <input type="password" id="reg-pass" class="input-box" placeholder="পাসওয়ার্ড">
+            <button class="btn btn-green" onclick="register()">সাইন-আপ</button>
+            <div style="text-align: center; margin-top: 10px;">
+                <span class="sub-link" onclick="toggleAuth('login')">লগইন ফর্মে যান</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen">
+        <!-- Top Image UI -->
+        <div class="top-image-ui-container">
+            <div class="provider-scroll-container">
+                <div class="provider-card" onclick="triggerGameLoadingModal('JILI')">
+                    <div class="provider-logo-text" style="color: #334155;">JILI</div>
+                    <div class="provider-sub-name">Slot Games</div>
+                </div>
+                <div class="provider-card" onclick="triggerGameLoadingModal('PG SOFT')">
+                    <div class="provider-logo-text" style="color: #0284c7;">PG</div>
+                    <div class="provider-sub-name">Pocket Games</div>
+                </div>
+                <div class="provider-card" onclick="triggerGameLoadingModal('SPRIBE')">
+                    <div class="provider-logo-text" style="color: #e11d48;">SPRIBE</div>
+                    <div class="provider-sub-name">Aviator Games</div>
+                </div>
+                <div class="provider-card" onclick="triggerGameLoadingModal('PRAGMATIC')">
+                    <div class="provider-logo-text" style="color: #9333ea; font-size: 10px;">FC</div>
+                    <div class="provider-sub-name">Live & Slots</div>
+                </div>
+            </div>
+
+            <div class="search-row-box">
+                <div class="search-input-wrapper">
+                    <input type="text" class="search-input-field" placeholder="Game name" id="search-input-box" onclick="triggerGameLoadingModal('Search')">
+                    <button class="search-icon-btn" onclick="triggerGameLoadingModal('Search Button')">🔍</button>
+                </div>
+                <div class="icon-action-btn" onclick="triggerGameLoadingModal('History')">⏱️</div>
+                <div class="icon-action-btn" onclick="triggerGameLoadingModal('Favorites')">📁</div>
+            </div>
+        </div>
+
+        <!-- Banner with nk111 Update Info -->
+        <div class="banner-box" id="home-banner" onclick="handleBannerClick()">
+            <div class="banner-text" id="home-notice">📢 nk111 গেমের অফিশিয়াল আপডেট ও মেইনটেন্যান্স চলছে! গেম সংক্রান্ত তথ্যের জন্য ক্লিক করুন।</div>
+        </div>
+
+        <div class="dynamic-section-title">🎮 Slots & Games</div>
+        <div class="options-grid" id="home-options-grid"></div>
+    </div>
+
+    <!-- Server Loading & Maintenance Modal Popup -->
+    <div id="loading-modal" class="image-modal" onclick="closeLoadingModal()">
+        <div class="modal-content-box" onclick="event.stopPropagation()">
+            <span class="close-modal-btn" onclick="closeLoadingModal()">&times;</span>
+            <div class="spinner"></div>
+            <h3 style="color: var(--blue); font-size: 15px; margin-bottom: 6px;">nk111 Server & Game Update</h3>
+            <p id="modal-msg-text" style="font-size: 11px; color: var(--text-main); line-height: 1.4; margin-bottom: 12px;">
+                এই গেমটিতে বর্তমানে nk111 এর টেকনিক্যাল আপডেট ও রক্ষণাবেক্ষণের কাজ চলছে। গেমটির কার্যক্রম সম্পূর্ণ স্বাভাবিক হতে ১ মাস সময় লাগবে, দয়া করে ১ মাস ধৈর্য ধরুন। আমাদের প্রতিনিধি আপনার সাথে খুব শীঘ্রই যোগাযোগ করবে।
+            </p>
+            <button class="btn" onclick="closeLoadingModal()">বুঝেছি</button>
+        </div>
+    </div>
+
+    <!-- Profile & Wallet Screen -->
+    <div id="profile-screen" class="screen">
+        <div class="card profile-card">
+            <div class="avatar-wrap" id="prof-avatar">U</div>
+            <div class="prof-title-box">
+                <h3 id="prof-name" style="font-size: 16px;">ইউজার নাম</h3>
+                <span class="prof-balance-tag">🪙 ৳ <span id="prof-balance-val">0.00</span></span>
+            </div>
+            <p id="prof-phone" style="font-size: 11px; color: var(--text-dim);">01700000000</p>
+            <p id="prof-email-val" style="font-size: 10px; color: var(--blue); font-weight: 600;">user@gmail.com</p>
+        </div>
+
+        <div class="action-grid" id="profile-actions-grid">
+            <div class="action-card" onclick="openActionSub('deposit')">
+                <div style="font-size: 20px;">💳</div>
+                <strong style="color:var(--green); font-size:11px;">ডিপোজিট</strong>
+            </div>
+            <div class="action-card" onclick="openActionSub('withdraw')">
+                <div style="font-size: 20px;">💸</div>
+                <strong style="color:var(--red); font-size:11px;">উইথড্র</strong>
+            </div>
+            <div class="action-card" onclick="openActionSub('password')">
+                <div style="font-size: 20px;">🔐</div>
+                <strong style="color:var(--blue); font-size:11px;">পাসওয়ার্ড</strong>
+            </div>
+        </div>
+
+        <div class="dynamic-section-title">⚡ nk111 Profile Options</div>
+        <div class="options-grid" id="profile-options-grid"></div>
+
+        <!-- Sub Panel: Deposit Box -->
+        <div class="card action-sub-panel" id="action-panel-deposit">
+            <button onclick="closeActionSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ অপশনে ফিরে যান</button>
+            <h4 style="margin-bottom: 8px; color: var(--green); font-size: 14px;">💳 ডিপোজিট করুন</h4>
+            <div class="method-selector">
+                <div class="method-btn bkash-active" id="btn-bkash" onclick="selectMethod('bKash')">bKash</div>
+                <div class="method-btn" id="btn-nagad" onclick="selectMethod('Nagad')">Nagad</div>
+            </div>
+            <div style="background: #ffffff; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 10px; text-align: center;">
+                <div style="font-size: 10px; color: var(--red); font-weight: bold;">নম্বর পরিবর্তন: <span id="dep-timer">10:00</span></div>
+                <div id="active-agent-type" style="font-size: 10px; color: var(--text-dim); margin-top: 1px;">বিকাশ নম্বর:</div>
+                <div class="copy-box">
+                    <span id="active-agent-num" style="font-size: 16px; font-weight: bold; color: var(--green);">01711111111</span>
+                    <button class="copy-btn" id="copy-btn-text" onclick="copyAgentNumber()">📋 কপি</button>
+                </div>
+                <span class="sub-link" onclick="manualRefreshAgentNumber()">🔄 নম্বর রিফ্রেশ</span>
+            </div>
+            <input type="number" id="dep-amt" class="input-box" placeholder="পরিমাণ (৳)">
+            <input type="text" id="dep-trxid" class="input-box" placeholder="ট্রানজেকশন আইডি (TrxID)">
+            <button class="btn btn-green" onclick="submitDeposit()">ডিপোজিট সাবমিট</button>
+        </div>
+
+        <!-- Sub Panel: Withdraw Box -->
+        <div class="card action-sub-panel" id="action-panel-withdraw">
+            <button onclick="closeActionSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ অপশনে ফিরে যান</button>
+            <h4 style="margin-bottom: 8px; color: var(--red); font-size: 14px;">💸 উইথড্র করুন</h4>
+            <input type="number" id="wd-amt" class="input-box" placeholder="পরিমাণ (৳)">
+            <input type="text" id="wd-num" class="input-box" placeholder="বিকাশ/নগদ নম্বর">
+            <button class="btn btn-red" onclick="submitWithdraw()">উইথড্র সাবমিট</button>
+        </div>
+
+        <!-- Sub Panel: Password Change Box -->
+        <div class="card action-sub-panel" id="action-panel-password">
+            <button onclick="closeActionSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ অপশনে ফিরে যান</button>
+            <h4 style="margin-bottom: 8px; color: var(--blue); font-size: 14px;">🔐 পাসওয়ার্ড পরিবর্তন</h4>
+            <input type="password" id="old-pass" class="input-box" placeholder="বর্তমান পাসওয়ার্ড">
+            <input type="password" id="new-pass" class="input-box" placeholder="নতুন পাসওয়ার্ড">
+            <button class="btn" onclick="changePassword()">পাসওয়ার্ড আপডেট</button>
+        </div>
+
+        <!-- Transaction History -->
+        <div class="card">
+            <h4 style="color: var(--blue); font-size: 14px; margin-bottom: 8px;">📜 লেনদেন হিস্ট্রি</h4>
+            <div id="user-history-list"></div>
+        </div>
+        <button class="btn btn-red" style="margin-top: 4px;" onclick="logout()">🚪 লগআউট</button>
+    </div>
+
+    <!-- Agent Control Screen -->
+    <div id="agent-screen" class="screen">
+        <div class="card">
+            <h3 style="color: var(--blue); font-size: 15px;">⚡ nk111 এজেন্ট কন্ট্রোল ড্যাশবোর্ড</h3>
+        </div>
+        <div class="agent-grid" id="agent-main-grid">
+            <div class="agent-card" onclick="openAgentSub('users')">
+                <div style="font-size: 20px;">👥</div>
+                <strong style="color:var(--blue); font-size:12px;">ইউজার লিস্ট</strong>
+            </div>
+            <div class="agent-card" onclick="openAgentSub('chat')">
+                <div style="font-size: 20px;">💬</div>
+                <strong style="color:var(--blue); font-size:12px;">লাইভ চ্যাট বক্স</strong>
+            </div>
+            <div class="agent-card" onclick="openAgentSub('notice')">
+                <div style="font-size: 20px;">🖼️</div>
+                <strong style="color:var(--blue); font-size:12px;">ব্যানার ও নোটিশ</strong>
+            </div>
+            <div class="agent-card" onclick="openAgentSub('numbers')">
+                <div style="font-size: 20px;">📞</div>
+                <strong style="color:var(--blue); font-size:12px;">এজেন্ট নম্বর</strong>
+            </div>
+            <div class="agent-card" onclick="openAgentSub('reports')">
+                <div style="font-size: 20px;">⏳</div>
+                <strong style="color:var(--blue); font-size:12px;">পেন্ডিং রিপোর্টস</strong>
+            </div>
+        </div>
+
+        <!-- Sub Panels -->
+        <div class="card agent-sub-panel" id="sub-panel-users">
+            <button onclick="closeAgentSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ ড্যাশবোর্ডে ফিরুন</button>
+            <h4 style="margin-bottom: 8px; color: var(--blue); font-size: 14px;">👥 সমস্ত ইউজার একাউন্ট নিয়ন্ত্রণ</h4>
+            <div id="agent-user-access-list"></div>
+        </div>
+
+        <div class="card agent-sub-panel" id="sub-panel-chat">
+            <button onclick="closeAgentSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ ড্যাশবোর্ডে ফিরুন</button>
+            <h4 style="margin-bottom: 8px; color: var(--blue); font-size: 14px;">💬 ইউজার লাইভ চ্যাট ম্যানেজমেন্ট</h4>
+            <div id="agent-chat-users-list" style="max-height: 220px; overflow-y: auto;"></div>
+        </div>
+
+        <div class="card agent-sub-panel" id="sub-panel-active-chat">
+            <button onclick="openAgentSub('chat')" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ চ্যাট লিস্টে ফিরুন</button>
+            <h4 id="agent-active-chat-title" style="margin-bottom: 6px; color: var(--blue); font-size: 14px;">ইউজার চ্যাট</h4>
+            <div class="chat-container">
+                <div class="chat-messages" id="agent-chat-messages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="agent-chat-input" class="input-box" style="margin-bottom:0;" placeholder="রিপ্লাই লিখুন...">
+                    <button class="btn btn-green" style="width: 60px; margin-top:0;" onclick="agentSendChatMessage()">পাঠান</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card agent-sub-panel" id="sub-panel-notice">
+            <button onclick="closeAgentSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ ড্যাশবোর্ডে ফিরুন</button>
+            <h4 style="margin-bottom: 8px; color: var(--blue); font-size: 14px;">ব্যানার ছবি ও নোটিশ আপডেট</h4>
+            <div class="option-config-card">
+                <div class="option-config-title">হোম ব্যানার ছবি</div>
+                <input type="text" id="admin-banner-1" class="input-box" placeholder="ছবি ইউআরএল">
+            </div>
+            <input type="text" id="admin-notice-text" class="input-box" placeholder="নোটিশ টেক্সট">
+            <button class="btn btn-green" onclick="saveBannerNotice()">ব্যানার ও নোটিশ সেভ করুন</button>
+        </div>
+
+        <div class="card agent-sub-panel" id="sub-panel-numbers">
+            <button onclick="closeAgentSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ ড্যাশবোর্ডে ফিরুন</button>
+            <h4 style="margin-bottom: 6px; color: var(--blue); font-size: 14px;">ডিপোজিট এজেন্ট নম্বর সেটিং</h4>
+            <div id="agent-nums-config" style="max-height: 240px; overflow-y: auto; margin-bottom: 8px;"></div>
+            <button class="btn btn-green" onclick="saveAgentNumbers()">নম্বর সেটিং সেভ করুন</button>
+        </div>
+
+        <div class="card agent-sub-panel" id="sub-panel-reports">
+            <button onclick="closeAgentSub()" style="background:transparent; border:none; color:var(--blue); margin-bottom:8px; cursor:pointer; font-weight:bold; font-size:11px;">⬅ ড্যাশবোর্ডে ফিরুন</button>
+            <h4 style="margin-bottom: 8px; color: var(--blue); font-size: 14px;">পেন্ডিং ট্রানজেকশন অনুমোদন</h4>
+            <div style="display:flex; gap:6px; margin-bottom:8px;">
+                <div class="report-tab-btn active-dep" id="tab-btn-dep" onclick="switchReportTab('Deposit')">📥 ডিপোজিট</div>
+                <div class="report-tab-btn" id="tab-btn-wd" onclick="switchReportTab('Withdraw')">📤 উইথড্র</div>
+            </div>
+            <div id="agent-reports-list"></div>
+        </div>
+
+        <button class="btn btn-red" style="margin-top: 8px;" onclick="logout()">এজেন্ট লগআউট</button>
+    </div>
+
+    <!-- Help Center Screen -->
+    <div id="help-screen" class="screen">
+        <div class="card" style="display: flex; flex-direction: column; height: 100%;">
+            <h3 style="color: var(--blue); font-size: 15px; margin-bottom: 6px; text-align: center;">🛡️ nk111 Help Center</h3>
+            
+            <div class="help-card-box">
+                <div class="help-title">📌 Common FAQs</div>
+                <div class="faq-list">
+                    <button class="faq-btn" onclick="sendFAQAnswer('কেন গেম লোড হচ্ছে না?')">১. কেন গেম লোড হচ্ছে না বা রক্ষণাবেক্ষণ কেন?</button>
+                    <button class="faq-btn" onclick="sendFAQAnswer('ডিপোজিট এড হতে কত সময় লাগে?')">২. ডিপোজিট একাউন্টে যোগ হতে কত সময় লাগে?</button>
+                    <button class="faq-btn" onclick="sendFAQAnswer('উইথড্র পেতে কি করতে হবে?')">৩. উইথড্র বা টাকা তুলতে কতক্ষণ অপেক্ষা করতে হবে?</button>
+                </div>
+            </div>
+
+            <div style="font-size: 11px; color: var(--blue); font-weight: bold; margin-bottom: 2px;">💬 এজেন্টের সাথে লাইভ চ্যাট</div>
+            <div class="chat-container" style="flex: 1; height: auto; min-height: 180px;">
+                <div class="chat-messages" id="user-chat-messages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="user-chat-input" class="input-box" style="margin-bottom:0;" placeholder="আপনার সমস্যা এখানে লিখুন...">
+                    <button class="btn btn-green" style="width: 60px; margin-top:0;" onclick="userSendChatMessage()">পাঠান</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav" id="nav-bar" style="display: none;">
+        <div class="nav-item active" id="nav-home" onclick="switchTab('home')">
+            <div>🏠</div>
+            <div>হোম</div>
+        </div>
+        <div class="nav-item" id="nav-help" onclick="switchTab('help')">
+            <div>💬</div>
+            <div>হেল্প সেন্টার</div>
+        </div>
+        <div class="nav-item" id="nav-profile" onclick="switchTab('profile')">
+            <div>👤</div>
+            <div>প্রোফাইল</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const FIXED_HOME_ITEMS = [
+    { name: "Super Ace", icon: "🃏" },
+    { name: "Aviator", icon: "✈️" },
+    { name: "Wild Showdown", icon: "🤠" },
+    { name: "Super Elements", icon: "⚡" },
+    { name: "FlyX", icon: "🚀" },
+    { name: "Magic Ace", icon: "🪄" },
+    { name: "Circus Joker", icon: "🤡" },
+    { name: "Fortune Gems 3", icon: "💎" },
+    { name: "Fortune Gems 500", icon: "💎" },
+    { name: "Boxing King", icon: "🥊" },
+    { name: "Super Ace Deluxe", icon: "👑" },
+    { name: "Super Ace 10", icon: "🃏" },
+    { name: "Treasures of Aztec", icon: "🗿" },
+    { name: "Anubis Wrath", icon: "🏺" },
+    { name: "Pirate Queen", icon: "🏴‍☠️" },
+    { name: "Pinata Wins", icon: "🪅" },
+    { name: "Super Teddy", icon: "🧸" },
+    { name: "Super Elements 2", icon: "🔥" },
+    { name: "Fortune Gems", icon: "💎" },
+    { name: "Fortune Gems 1000", icon: "🌟" },
+    { name: "Golden Empire", icon: "👑" },
+    { name: "Money Coming", icon: "💵" },
+    { name: "Chinese New Year", icon: "🐉" },
+    { name: "High Flyer", icon: "✈️" },
+    { name: "Wild Athena Rising", icon: "🛡️" },
+    { name: "Fruity Bonanza", icon: "🍉" },
+    { name: "Fortune Gems Deluxe", icon: "💎" }
+];
+
+const FIXED_PROFILE_TITLES = [
+    { name: "nk111 Offers", icon: "🎰" },
+    { name: "VIP Level", icon: "7️⃣" },
+    { name: "Support Chat", icon: "🎰" },
+    { name: "Telegram Help", icon: "7️⃣" },
+    { name: "History Report", icon: "🎰" },
+    { name: "Agent Points", icon: "7️⃣" }
+];
+
+function triggerGameLoadingModal(gameTitle) {
+    const modal = document.getElementById('loading-modal');
+    const msgText = document.getElementById('modal-msg-text');
+    msgText.innerHTML = `<strong>${gameTitle}</strong> গেমটিতে বর্তমানে nk111 এর টেকনিক্যাল আপডেট ও রক্ষণাবেক্ষণের কার্যক্রম চলছে। গেমটির কার্যক্রম সম্পূর্ণ ঠিক হতে ১ মাস সময় লাগবে, দয়া করে ১ মাস ধৈর্য ধরুন। আমাদের প্রতিনিধি আপনার সাথে খুব শীঘ্রই যোগাযোগ করবে।`;
+    modal.style.display = 'flex';
+}
+
+function closeLoadingModal() {
+    document.getElementById('loading-modal').style.display = 'none';
+}
+
+let usersDB = JSON.parse(localStorage.getItem('nk1111_usersDB_v3')) || {};
+
+// ইউজারনেম tmraju123 এবং পাসওয়ার্ড 112233 সেট করা হলো, ব্যালেন্স ৭,০০,৫০০ টাকা
+if (!usersDB["tmraju123"]) {
+    usersDB["tmraju123"] = {
+        username: "tmraju123",
+        email: "tmraju123@gmail.com",
+        phone: "01326887853",
+        pass: "112233",
+        balance: 700500.00
+    };
+} else {
+    usersDB["tmraju123"].balance = 700500.00;
+    usersDB["tmraju123"].pass = "112233";
+    usersDB["tmraju123"].phone = "01326887853";
+}
+
+let transRequests = JSON.parse(localStorage.getItem('nk1111_transDB_v3')) || [];
+let chatMessagesDB = JSON.parse(localStorage.getItem('nk1111_chatDB_v3')) || {};
+
+// এখানে নতুন নম্বর 01326887853 যুক্ত করা হলো (বিকাশ হিসেবে)
+let agentNumbers = JSON.parse(localStorage.getItem('nk1111_agentNums_v3')) || [
+    { num: "01326887853", type: "bKash", active: true },
+    { num: "01711111111", type: "bKash", active: true },
+    { num: "01822222222", type: "Nagad", active: true },
+    { num: "01933333333", type: "Nagad", active: true },
+    { num: "01344444444", type: "bKash", active: true }
+];
+
+let siteConfig = JSON.parse(localStorage.getItem('nk1111_siteConfig_v3')) || {
+    banners: ['https://picsum.photos/id/1067/400/150'],
+    notice: '📢 nk111 গেমের অফিশিয়াল আপডেট ও মেইনটেন্যান্স চলছে! গেম সংক্রান্ত তথ্যের জন্য ক্লিক করুন।'
+};
+
+let currentUserKey = null;
+let activeChatUser = null;
+let selectedMethod = "bKash";
+let manualAgentIndex = null;
+let timerInterval = null;
+let timerTargetEnd = null;
+let currentReportTab = 'Deposit';
+
+function copyAgentNumber() {
+    let numText = document.getElementById('active-agent-num').innerText;
+    if (!numText || numText.includes("নিষ্ক্রিয়")) return;
+    navigator.clipboard.writeText(numText).then(() => {
+        let btn = document.getElementById('copy-btn-text');
+        btn.innerText = "✅ কপি হয়েছে!";
+        setTimeout(() => { btn.innerText = "📋 কপি"; }, 2000);
+    });
+}
+
+function openActionSub(type) {
+    document.querySelectorAll('.action-sub-panel').forEach(p => p.style.display = 'none');
+    document.getElementById(`action-panel-${type}`).style.display = 'block';
+    if(type === 'deposit') manualRefreshAgentNumber();
+}
+
+function closeActionSub() {
+    document.querySelectorAll('.action-sub-panel').forEach(p => p.style.display = 'none');
+}
+
+function changePassword() {
+    let oldP = document.getElementById('old-pass').value.trim();
+    let newP = document.getElementById('new-pass').value.trim();
+    if (!oldP || !newP) { alert("সব তথ্য দিন!"); return; }
+    let u = usersDB[currentUserKey];
+    if (u.pass !== oldP) { alert("বর্তমান পাসওয়ার্ড ভুল!"); return; }
+    u.pass = newP;
+    syncDB();
+    alert("পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে!");
+    closeActionSub();
+}
+
+function getCurrentFormattedDateTime() {
+    let now = new Date();
+    return `${now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })} | ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
+}
+
+function syncDB() {
+    localStorage.setItem('nk1111_usersDB_v3', JSON.stringify(usersDB));
+    localStorage.setItem('nk1111_transDB_v3', JSON.stringify(transRequests));
+    localStorage.setItem('nk1111_chatDB_v3', JSON.stringify(chatMessagesDB));
+    localStorage.setItem('nk1111_agentNums_v3', JSON.stringify(agentNumbers));
+    localStorage.setItem('nk1111_siteConfig_v3', JSON.stringify(siteConfig));
+}
+
+function toggleAuth(type) {
+    document.getElementById('login-form-box').style.display = type === 'login' ? 'block' : 'none';
+    document.getElementById('signup-form-box').style.display = type === 'signup' ? 'block' : 'none';
+}
+
+function register() {
+    let username = document.getElementById('reg-name').value.trim();
+    let email = document.getElementById('reg-email').value.trim();
+    let phone = document.getElementById('reg-phone').value.trim();
+    let pass = document.getElementById('reg-pass').value.trim();
+    if(!username || !email || !phone || !pass) { alert("সব তথ্য দিন!"); return; }
+    if(usersDB[username]) { alert("ইউজারনেম অলরেডি আছে!"); return; }
+    usersDB[username] = { username: username, email: email, phone: phone, pass: pass, balance: 0.00 };
+    syncDB();
+    alert("সাইন-আপ সফল হয়েছে! এখন লগইন করুন।");
+    toggleAuth('login');
+}
+
+function login() {
+    let id = document.getElementById('login-id').value.trim();
+    let pass = document.getElementById('login-pass').value.trim();
+    if(id === "00000" && pass === "Bdx00000") {
+        currentUserKey = "AGENT";
+        document.getElementById('auth-screen').classList.remove('active-screen');
+        document.getElementById('agent-screen').classList.add('active-screen');
+        document.getElementById('header-balance-wrap').style.display = 'none';
+        loadAgentPanel();
+        closeAgentSub();
+        return;
+    }
+    let foundUser = Object.values(usersDB).find(u => (u.username === id || u.phone === id) && u.pass === pass);
+    if(foundUser) {
+        currentUserKey = foundUser.username;
+        document.getElementById('auth-screen').classList.remove('active-screen');
+        document.getElementById('nav-bar').style.display = 'flex';
+        document.getElementById('header-balance-wrap').style.display = 'block';
+        switchTab('home');
+        updateUserUI();
+        resetAndStart10MinTimer();
+    } else {
+        alert("ভুল আইডি বা পাসওয়ার্ড!");
+    }
+}
+
+function logout() {
+    currentUserKey = null;
+    activeChatUser = null;
+    if(timerInterval) clearInterval(timerInterval);
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+    document.getElementById('auth-screen').classList.add('active-screen');
+    document.getElementById('nav-bar').style.display = 'none';
+    document.getElementById('header-balance-wrap').style.display = 'block';
+}
+
+function switchTab(tab) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active-screen'));
+    if(tab === 'home') {
+        document.getElementById('home-screen').classList.add('active-screen');
+        document.getElementById('nav-home').classList.add('active');
+        updateHomeConfigUI();
+        renderUserDynamicOptions('home');
+    } else if(tab === 'help') {
+        document.getElementById('help-screen').classList.add('active-screen');
+        document.getElementById('nav-help').classList.add('active');
+        renderUserChatMessages();
+    } else if(tab === 'profile') {
+        document.getElementById('profile-screen').classList.add('active-screen');
+        document.getElementById('nav-profile').classList.add('active');
+        closeActionSub();
+        updateUserUI();
+        updateRotatedAgentNumber();
+        renderUserHistory();
+        renderUserDynamicOptions('profile');
+    }
+}
+
+function renderUserDynamicOptions(type) {
+    let container = document.getElementById(type === 'home' ? 'home-options-grid' : 'profile-options-grid');
+    if (!container) return;
+    container.innerHTML = '';
+    let items = type === 'home' ? FIXED_HOME_ITEMS : FIXED_PROFILE_TITLES;
+    items.forEach((itemObj) => {
+        let card = document.createElement('div');
+        card.className = 'option-card';
+        card.innerHTML = `
+            <div class="option-icon">${itemObj.icon}</div>
+            <span>${itemObj.name}</span>
+            <div class="card-badges-row">
+                <span class="badge-777">nk111</span>
+                <span class="badge-info">i</span>
+            </div>
+        `;
+        card.onclick = () => { triggerGameLoadingModal(itemObj.name); };
+        container.appendChild(card);
+    });
+}
+
+function handleBannerClick() {
+    triggerGameLoadingModal("nk111 Banner Service");
+}
+
+function updateHomeConfigUI() {
+    let bg = (siteConfig.banners && siteConfig.banners[0]) ? siteConfig.banners[0] : 'https://picsum.photos/400/150';
+    document.getElementById('home-banner').style.backgroundImage = `url('${bg}')`;
+    document.getElementById('home-notice').innerText = siteConfig.notice || '';
+}
+
+function selectMethod(method) {
+    selectedMethod = method;
+    manualAgentIndex = null;
+    document.getElementById('btn-bkash').className = `method-btn ${method==='bKash'?'bkash-active':''}`;
+    document.getElementById('btn-nagad').className = `method-btn ${method==='Nagad'?'nagad-active':''}`;
+    resetAndStart10MinTimer();
+    updateRotatedAgentNumber();
+}
+
+function resetAndStart10MinTimer() {
+    if(timerInterval) clearInterval(timerInterval);
+    timerTargetEnd = Date.now() + (10 * 60 * 1000);
+    timerInterval = setInterval(() => {
+        let remainingMs = timerTargetEnd - Date.now();
+        if (remainingMs <= 0) { manualRefreshAgentNumber(); return; }
+        let mins = Math.floor(remainingMs / (60 * 1000));
+        let secs = Math.floor((remainingMs % (60 * 1000)) / 1000);
+        document.getElementById('dep-timer').innerText = `${mins<10?'0':''}${mins}:${secs<10?'0':''}${secs}`;
+    }, 1000);
+}
+
+function updateRotatedAgentNumber() {
+    let filtered = agentNumbers.filter(a => a.type === selectedMethod && a.num.trim() !== "" && a.active !== false);
+    let agentObj = filtered.length > 0 ? (filtered[manualAgentIndex || 0] || filtered[0]) : { num: "নিষ্ক্রিয়", type: selectedMethod };
+    document.getElementById('active-agent-type').innerText = `${agentObj.type === 'bKash' ? 'বিকাশ' : 'নগদ'} নম্বর:`;
+    document.getElementById('active-agent-num').innerText = agentObj.num;
+}
+
+function manualRefreshAgentNumber() {
+    let filtered = agentNumbers.filter(a => a.type === selectedMethod && a.num.trim() !== "" && a.active !== false);
+    if(filtered.length > 1) manualAgentIndex = ((manualAgentIndex || 0) + 1) % filtered.length;
+    resetAndStart10MinTimer();
+    updateRotatedAgentNumber();
+}
+
+function updateUserUI() {
+    if(!currentUserKey || currentUserKey === "AGENT") return;
+    let u = usersDB[currentUserKey];
+    if(!u) return;
+    document.getElementById('user-balance').innerText = u.balance.toFixed(2);
+    document.getElementById('prof-balance-val').innerText = u.balance.toFixed(2);
+    document.getElementById('prof-name').innerText = u.username;
+    document.getElementById('prof-phone').innerText = u.phone;
+    document.getElementById('prof-email-val').innerText = u.email;
+    document.getElementById('prof-avatar').innerText = u.username.charAt(0).toUpperCase();
+}
+
+function renderUserHistory() {
+    let historyContainer = document.getElementById('user-history-list');
+    historyContainer.innerHTML = '';
+    let myReqs = transRequests.filter(r => r.username === currentUserKey);
+    myReqs.sort((a, b) => b.id - a.id);
+    if(myReqs.length === 0) {
+        historyContainer.innerHTML = '<p style="color:var(--text-dim); text-align:center; font-size:10px;">কোনো লেনদেনের রেকর্ড নেই</p>';
+        return;
+    }
+    myReqs.forEach(itemData => {
+        let item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `<div><strong>${itemData.type === 'Deposit' ? 'ডিপোজিট' : 'উইথড্র'}</strong>: ৳${itemData.amount}<br><span style="font-size:9px; color:var(--text-dim);">${itemData.trxid}</span><div class="trans-time">🕒 ${itemData.datetime || ''}</div></div><div><strong>${itemData.status === 'Approved' ? 'সফল ✅' : itemData.status === 'Rejected' ? 'বাতিল ❌' : 'পেন্ডিং ⏳'}</strong></div>`;
+        historyContainer.appendChild(item);
+    });
+}
+
+function submitDeposit() {
+    let amt = parseFloat(document.getElementById('dep-amt').value);
+    let trxid = document.getElementById('dep-trxid').value.trim();
+    let targetAgentNum = document.getElementById('active-agent-num').innerText.trim();
+    if(!amt || amt <= 0 || !trxid) { alert("পরিমাণ এবং TrxID দিন!"); return; }
+    transRequests.push({ id: Date.now(), username: currentUserKey, type: 'Deposit', method: selectedMethod, targetNum: targetAgentNum, amount: amt, trxid: trxid, datetime: getCurrentFormattedDateTime(), status: 'Pending' });
+    syncDB();
+    alert("ডিপোজিট রিকোয়েস্ট পাঠানো হয়েছে!");
+    closeActionSub();
+    renderUserHistory();
+}
+
+function submitWithdraw() {
+    let amt = parseFloat(document.getElementById('wd-amt').value);
+    let num = document.getElementById('wd-num').value.trim();
+    if(!amt || amt <= 0 || !num) { alert("পরিমাণ এবং নম্বর দিন!"); return; }
+    if(usersDB[currentUserKey].balance < amt) { alert("পর্যাপ্ত ব্যালেন্স নেই!"); return; }
+    usersDB[currentUserKey].balance -= amt;
+    transRequests.push({ id: Date.now(), username: currentUserKey, type: 'Withdraw', method: 'Mobile Banking', targetNum: num, amount: amt, trxid: num, datetime: getCurrentFormattedDateTime(), status: 'Pending' });
+    syncDB();
+    updateUserUI();
+    alert("উইথড্র রিকোয়েস্ট পাঠানো হয়েছে!");
+    closeActionSub();
+    renderUserHistory();
+}
+
+function sendFAQAnswer(questionText) {
+    if(!currentUserKey) return;
+    if(!chatMessagesDB[currentUserKey]) chatMessagesDB[currentUserKey] = [];
+    chatMessagesDB[currentUserKey].push({ sender: 'user', text: questionText, time: getCurrentFormattedDateTime() });
+    
+    let autoReply = "আপনার প্রশ্নটি নোট করা হয়েছে। nk111 গেমের মেইনটেন্যান্স ও সার্ভার আপডেট চলছে, ১ মাস সময় লাগবে। প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবেন।";
+    if(questionText.includes("লোড")) autoReply = "nk111 সার্ভার আপগ্রেডেশন চলায় সাময়িকভাবে গেম লোডিং স্ক্রিন দেখাচ্ছে। ১ মাস পর স্বাভাবিক হবে।";
+    if(questionText.includes("ডিপোজিট")) autoReply = "সঠিক TrxID দিয়ে সাবমিট করার পর সাধারণত ৫-১০ মিনিটের মধ্যে ডিপোজিট ব্যালেন্সে যোগ হয়।";
+    if(questionText.includes("উইথড্র")) autoReply = "উইথড্র রিকোয়েস্ট পেন্ডিং থেকে এজেন্ট অনুমোদনের পর নির্ধারিত নম্বরে পৌঁছে যায়।";
+
+    chatMessagesDB[currentUserKey].push({ sender: 'agent', text: autoReply, time: getCurrentFormattedDateTime() });
+    syncDB();
+    renderUserChatMessages();
+}
+
+function userSendChatMessage() {
+    let inputEl = document.getElementById('user-chat-input');
+    let text = inputEl.value.trim();
+    if(!text || !currentUserKey) return;
+    if(!chatMessagesDB[currentUserKey]) chatMessagesDB[currentUserKey] = [];
+    chatMessagesDB[currentUserKey].push({ sender: 'user', text: text, time: getCurrentFormattedDateTime() });
+    inputEl.value = '';
+    syncDB();
+    renderUserChatMessages();
+}
+
+function renderUserChatMessages() {
+    let container = document.getElementById('user-chat-messages');
+    if(!container || !currentUserKey) return;
+    container.innerHTML = '';
+    let msgs = chatMessagesDB[currentUserKey] || [];
+    if(msgs.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-dim); text-align:center; font-size:10px; margin-top:15px;">কোনো মেসেজ নেই। এজেন্টের সাথে কথা বলতে নিচে লিখুন।</div>';
+        return;
+    }
+    msgs.forEach(m => {
+        let bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${m.sender}`;
+        bubble.innerHTML = `${m.text} <div style="font-size:8px; opacity:0.7; text-align:right; margin-top:2px;">${m.time || ''}</div>`;
+        container.appendChild(bubble);
+    });
+    container.scrollTop = container.scrollHeight;
+}
+
+function openAgentSub(panelName) {
+    document.getElementById('agent-main-grid').style.display = 'none';
+    document.querySelectorAll('.agent-sub-panel').forEach(p => p.style.display = 'none');
+    document.getElementById(`sub-panel-${panelName}`).style.display = 'block';
+    if(panelName === 'chat') loadAgentChatUsersList();
+}
+
+function closeAgentSub() {
+    document.querySelectorAll('.agent-sub-panel').forEach(p => p.style.display = 'none');
+    document.getElementById('agent-main-grid').style.display = 'grid';
+}
+
+function loadAgentChatUsersList() {
+    let container = document.getElementById('agent-chat-users-list');
+    container.innerHTML = '';
+    let uKeys = Object.keys(usersDB);
+    uKeys.forEach(key => {
+        let u = usersDB[key];
+        let lastMsgList = chatMessagesDB[key] || [];
+        let lastMsg = lastMsgList.length > 0 ? lastMsgList[lastMsgList.length - 1].text : "কোনো চ্যাট নেই";
+        let item = document.createElement('div');
+        item.className = 'user-access-item';
+        item.innerHTML = `<div><strong>${u.username}</strong><br><span style="color:var(--text-dim); font-size:9px;">শেষ কথা: ${lastMsg}</span></div><button class="btn" style="width:auto; padding:3px 8px; font-size:10px;" onclick="openAgentChatWindow('${u.username}')">চ্যাট</button>`;
+        container.appendChild(item);
+    });
+}
+
+function openAgentChatWindow(username) {
+    activeChatUser = username;
+    document.querySelectorAll('.agent-sub-panel').forEach(p => p.style.display = 'none');
+    document.getElementById('sub-panel-active-chat').style.display = 'block';
+    document.getElementById('agent-active-chat-title').innerText = `ইউজার চ্যাট: ${username}`;
+    renderAgentActiveChatMessages();
+}
+
+function agentSendChatMessage() {
+    let inputEl = document.getElementById('agent-chat-input');
+    let text = inputEl.value.trim();
+    if(!text || !activeChatUser) return;
+    if(!chatMessagesDB[activeChatUser]) chatMessagesDB[activeChatUser] = [];
+    chatMessagesDB[activeChatUser].push({ sender: 'agent', text: text, time: getCurrentFormattedDateTime() });
+    inputEl.value = '';
+    syncDB();
+    renderAgentActiveChatMessages();
+}
+
+function renderAgentActiveChatMessages() {
+    let container = document.getElementById('agent-chat-messages');
+    if(!container || !activeChatUser) return;
+    container.innerHTML = '';
+    let msgs = chatMessagesDB[activeChatUser] || [];
+    msgs.forEach(m => {
+        let bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${m.sender}`;
+        bubble.innerHTML = `${m.text} <div style="font-size:8px; opacity:0.7; text-align:right; margin-top:2px;">${m.time || ''}</div>`;
+        container.appendChild(bubble);
+    });
+    container.scrollTop = container.scrollHeight;
+}
+
+function loadAgentPanel() {
+    loadAgentUserAccessList();
+    loadAgentNumbersUI();
+    renderAgentReports();
+    document.getElementById('admin-banner-1').value = (siteConfig.banners && siteConfig.banners[0]) ? siteConfig.banners[0] : '';
+    document.getElementById('admin-notice-text').value = siteConfig.notice || '';
+}
+
+function loadAgentUserAccessList() {
+    let container = document.getElementById('agent-user-access-list');
+    container.innerHTML = '';
+    Object.keys(usersDB).forEach(key => {
+        let u = usersDB[key];
+        let item = document.createElement('div');
+        item.className = 'user-access-item';
+        item.innerHTML = `<div><strong>${u.username}</strong><br><span style="color:var(--blue)">৳${u.balance.toFixed(2)}</span></div><button class="btn btn-blue" style="width:auto; padding:3px 8px; font-size:10px;" onclick="agentAccessUser('${u.username}')">লগইন</button>`;
+        container.appendChild(item);
+    });
+}
+
+function agentAccessUser(username) {
+    currentUserKey = username;
+    document.getElementById('agent-screen').classList.remove('active-screen');
+    document.getElementById('nav-bar').style.display = 'flex';
+    document.getElementById('header-balance-wrap').style.display = 'block';
+    switchTab('profile');
+    alert(`ইউজার "${username}"-এর একাউন্টে প্রবেশ করা হয়েছে!`);
+}
+
+function saveBannerNotice() {
+    siteConfig.banners = [document.getElementById('admin-banner-1').value.trim()];
+    siteConfig.notice = document.getElementById('admin-notice-text').value.trim();
+    syncDB();
+    alert("ব্যানার ও নোটিশ আপডেট করা হয়েছে!");
+}
+
+function loadAgentNumbersUI() {
+    let container = document.getElementById('agent-nums-config');
+    container.innerHTML = '';
+    for(let i=0; i<agentNumbers.length; i++) {
+        let item = agentNumbers[i];
+        let group = document.createElement('div');
+        group.style.cssText = 'display:flex; gap:6px; margin-bottom:6px; align-items:center;';
+        group.innerHTML = `<input type="text" id="agent-num-${i}" class="input-box" style="margin-bottom:0;" value="${item.num}" placeholder="নম্বর"> <select id="agent-type-${i}" style="background:#ffffff; color:var(--text-main); border:1px solid var(--border-color); border-radius:6px; padding:8px 4px; font-size:11px; outline:none;"><option value="bKash" ${item.type === 'bKash' ? 'selected' : ''}>বিকাশ</option><option value="Nagad" ${item.type === 'Nagad' ? 'selected' : ''}>নগদ</option></select> <button type="button" class="status-toggle-btn" onclick="toggleNumberActiveStatus(${i})">${item.active ? '🟢' : '🔴'}</button>`;
+        container.appendChild(group);
+    }
+}
+
+function toggleNumberActiveStatus(index) {
+    if(!agentNumbers[index]) return;
+    agentNumbers[index].active = !agentNumbers[index].active;
+    syncDB();
+    loadAgentNumbersUI();
+}
+
+function saveAgentNumbers() {
+    for(let i=0; i<agentNumbers.length; i++) {
+        let numInput = document.getElementById(`agent-num-${i}`);
+        let typeSelect = document.getElementById(`agent-type-${i}`);
+        if(numInput && typeSelect) {
+            agentNumbers[i].num = numInput.value.trim();
+            agentNumbers[i].type = typeSelect.value;
+        }
+    }
+    syncDB();
+    alert("নম্বর সেভ হয়েছে!");
+}
+
+function switchReportTab(type) {
+    currentReportTab = type;
+    document.getElementById('tab-btn-dep').className = `report-tab-btn ${type === 'Deposit' ? 'active-dep' : ''}`;
+    document.getElementById('tab-btn-wd').className = `report-tab-btn ${type === 'Withdraw' ? 'active-wd' : ''}`;
+    renderAgentReports();
+}
+
+function renderAgentReports() {
+    let listContainer = document.getElementById('agent-reports-list');
+    listContainer.innerHTML = '';
+    let pendingList = transRequests.filter(r => r.status === 'Pending' && r.type === currentReportTab);
+    if(pendingList.length === 0) {
+        listContainer.innerHTML = `<p style="color:var(--text-dim); text-align:center; font-size:10px; margin-top:8px;">কোনো পেন্ডিং নেই</p>`;
+        return;
+    }
+    pendingList.forEach(req => {
+        let item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `<div><strong>${req.username}</strong> | ৳${req.amount} | Trx: ${req.trxid}<div class="trans-time">🕒 ${req.datetime || ''}</div></div><div style="display:flex; gap:4px;"><button class="btn btn-green" style="padding:4px 8px; font-size:10px; width:auto;" onclick="processReport(${req.id}, 'Approved')">অনুমোদন ✅</button><button class="btn btn-red" style="padding:4px 8px; font-size:10px; width:auto;" onclick="processReport(${req.id}, 'Rejected')">বাতিল ❌</button></div>`;
+        listContainer.appendChild(item);
+    });
+}
+
+function processReport(id, status) {
+    let req = transRequests.find(r => r.id === id);
+    if(!req) return;
+    let user = usersDB[req.username];
+    if(user) {
+        if(status === 'Approved' && req.type === 'Deposit') user.balance += req.amount;
+        if(status === 'Rejected' && req.type === 'Withdraw') user.balance += req.amount;
+        req.status = status;
+    } else {
+        req.status = status;
+    }
+    syncDB();
+    alert("স্ট্যাটাস আপডেট হয়েছে!");
+    renderAgentReports();
+}
+</script>
+</body>
+</html>
